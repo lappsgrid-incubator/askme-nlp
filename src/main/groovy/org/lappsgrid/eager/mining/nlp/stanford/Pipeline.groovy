@@ -6,6 +6,7 @@ import edu.stanford.nlp.pipeline.CoreEntityMention
 import edu.stanford.nlp.pipeline.CoreSentence
 import edu.stanford.nlp.pipeline.StanfordCoreNLP
 import edu.stanford.nlp.util.Pair
+import groovy.util.logging.Slf4j
 import org.lappsgrid.discriminator.Discriminators
 import org.lappsgrid.serialization.Data
 import org.lappsgrid.serialization.LifException
@@ -21,10 +22,9 @@ import org.lappsgrid.vocabulary.Features
 /**
  *
  */
+@Slf4j('logger')
 public class Pipeline
 {
-//    final Logger logger = LoggerFactory.getLogger(Pipeline)
-
     StanfordCoreNLP pipeline;
 
     public  Pipeline() {
@@ -42,13 +42,13 @@ public class Pipeline
 
     public Container process(Container container) throws LifException
     {
-        //logger.info("Processing container. Size: {}", container.text.length())
+        logger.debug("Processing container. Size: {}", container.text.length())
         CoreDocument document = new CoreDocument(container.getText());
         pipeline.annotate(document);
 
 
         // Process the sentences.
-        //logger.debug("processing sentences")
+        logger.trace("processing sentences")
         int id = 0;
         View sentences = container.newView();
         for (CoreSentence s : document.sentences()) {
@@ -60,7 +60,7 @@ public class Pipeline
         }
 
         // Process tokens. Include lemmas and part of speech.
-        //logger.debug('Processing tokens')
+        logger.trace('Processing tokens')
         View tokens = container.newView();
         id = 0;
         for (CoreLabel token : document.tokens()) {
@@ -89,7 +89,7 @@ public class Pipeline
         }
         */
 //        return new Data(Uri.LIF, container).asPrettyJson();
-        //logger.debug('Processing complete')
+        logger.debug('Processing complete')
         return container
     }
 
