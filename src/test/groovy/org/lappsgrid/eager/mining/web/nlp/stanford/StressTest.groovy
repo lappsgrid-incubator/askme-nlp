@@ -1,11 +1,11 @@
 package org.lappsgrid.eager.mining.web.nlp.stanford
 
 import groovy.util.logging.Slf4j
-import org.lappsgrid.eager.mining.core.Configuration
+//import org.lappsgrid.eager.mining.core.Configuration
 import org.lappsgrid.eager.mining.core.jmx.Registry
-import org.lappsgrid.eager.rabbitmq.Message
-import org.lappsgrid.eager.rabbitmq.topic.MessageBox
-import org.lappsgrid.eager.rabbitmq.topic.PostOffice
+import org.lappsgrid.rabbitmq.Message
+import org.lappsgrid.rabbitmq.topic.MessageBox
+import org.lappsgrid.rabbitmq.topic.PostOffice
 
 import java.util.concurrent.atomic.AtomicInteger
 

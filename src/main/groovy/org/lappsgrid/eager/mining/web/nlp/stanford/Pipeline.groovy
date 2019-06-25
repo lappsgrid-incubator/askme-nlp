@@ -2,6 +2,7 @@ package org.lappsgrid.eager.mining.web.nlp.stanford
 
 import edu.stanford.nlp.ling.CoreLabel
 import edu.stanford.nlp.pipeline.CoreDocument
+import edu.stanford.nlp.pipeline.CoreEntityMention
 import edu.stanford.nlp.pipeline.CoreSentence
 import edu.stanford.nlp.pipeline.StanfordCoreNLP
 import edu.stanford.nlp.util.Pair
@@ -10,8 +11,6 @@ import org.lappsgrid.serialization.LifException
 import org.lappsgrid.serialization.lif.Annotation
 import org.lappsgrid.serialization.lif.Container
 import org.lappsgrid.serialization.lif.View
-//import org.slf4j.Logger
-//import org.slf4j.LoggerFactory
 
 import static org.lappsgrid.discriminator.Discriminators.*;
 import org.lappsgrid.vocabulary.Features
@@ -22,11 +21,26 @@ import org.lappsgrid.vocabulary.Features
 @Slf4j('logger')
 public class Pipeline
 {
-    StanfordCoreNLP pipeline;
+    // Factory methods
 
-    public  Pipeline() {
+    static public Pipeline Segmenter() {
+        return new Pipeline("tokenize,ssplit")
+    }
+    static public Pipeline Tagger() {
+        return new Pipeline("tokenize,ssplit,pos")
+    }
+    static public Pipeline Lemmatizer() {
+        return new Pipeline("tokenize,ssplit,pos,lemma")
+    }
+    static public Pipeline NamedEntityRecognizer() {
+        return new Pipeline("tokenize,ssplit,pos,lemma,ner")
+    }
+
+    private StanfordCoreNLP pipeline;
+
+    protected Pipeline(String annotators) {
         Properties props = new Properties();
-        props.setProperty("annotators", "tokenize,ssplit,pos,lemma");
+        props.setProperty("annotators", annotators);
         pipeline = new StanfordCoreNLP(props);
     }
 
@@ -73,7 +87,6 @@ public class Pipeline
             tokens.addContains(Uri.TOKEN, this.getClass().getName(), "stanford");
         }
 
-        /*
         View ner = container.newView();
         id = 0;
         for (CoreEntityMention mention : document.entityMentions()) {
@@ -84,7 +97,9 @@ public class Pipeline
         if (id > 0) {
             ner.addContains(Uri.NE, this.getClass().getName(), "stanford");
         }
-        */
+        else {
+            container.views.remove(ner)
+        }
 //        return new Data(Uri.LIF, container).asPrettyJson();
         logger.debug('Processing complete')
         return container
