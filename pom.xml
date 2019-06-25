@@ -44,6 +44,24 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.anc.maven.plugins</groupId>
+                <artifactId>anc-maven-plugin</artifactId>
+                <version>1.1.0</version>
+                <executions>
+                    <execution>
+                        <id>version-file</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>version</goal>
+                            <goal>build</goal>
+                        </goals>
+                        <configuration>
+                            <buildFile>src/main/resources/build</buildFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <dependencies>

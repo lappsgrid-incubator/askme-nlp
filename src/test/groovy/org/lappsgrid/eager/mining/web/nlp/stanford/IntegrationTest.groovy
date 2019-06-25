@@ -41,7 +41,7 @@ class IntegrationTest {
     void test() {
         String json
         CountDownLatch latch = new CountDownLatch(1)
-        MailBox box = new MailBox(Main.POSTOFFICE, SELF) {
+        MailBox box = new MailBox(Main.POSTOFFICE, SELF, Main.HOST) {
             @Override
             void recv(String message) {
                 json = message
