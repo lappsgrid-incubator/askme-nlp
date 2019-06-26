@@ -2,6 +2,7 @@ package org.lappsgrid.eager.mining.web.nlp.stanford
 
 
 import org.junit.Test
+import org.lappsgrid.serialization.Serializer
 import org.lappsgrid.serialization.lif.Annotation
 import org.lappsgrid.serialization.lif.Container
 import org.lappsgrid.serialization.lif.View
@@ -69,8 +70,12 @@ class PipelineTest {
     void pos() {
         Pipeline pipeline = Pipeline.Tagger()
         Container container = pipeline.process(TEXT)
+        println Serializer.toPrettyJson(container)
         assert 2 == container.views.size()
-        assert 11 == container.views[1].annotations.size()
+
+        List<View> views = container.findViewsThatContain(Uri.POS)
+        assert 1 == views.size()
+        assert 11 == views[0].annotations.size()
         container.views[1].annotations.each { Annotation a ->
             assert a.features.pos != null
             assert a.features.lemma == null

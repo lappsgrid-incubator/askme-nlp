@@ -74,17 +74,25 @@ public class Pipeline
         logger.trace('Processing tokens')
         View tokens = container.newView();
         id = 0;
+        int pos = 0;
+        int lemma = 0;
         for (CoreLabel token : document.tokens()) {
             int start = token.beginPosition();
             int end = token.endPosition();
             Annotation a = tokens.newAnnotation("tok-" + (id++), Uri.TOKEN, start, end);
-            set(a, Features.Token.LEMMA, token.lemma());
-            set(a, Features.Token.PART_OF_SPEECH, token.tag());
+            if (set(a, Features.Token.LEMMA, token.lemma())) ++lemma
+            if (set(a, Features.Token.PART_OF_SPEECH, token.tag())) ++ pos
             set(a, Features.Token.WORD, token.word());
             set(a, "category", token.category());
         }
         if (id > 0) {
             tokens.addContains(Uri.TOKEN, this.getClass().getName(), "stanford");
+        }
+        if (pos > 0) {
+            tokens.addContains(Uri.POS, this.class.name, "stanford")
+        }
+        if (lemma > 0) {
+            tokens.addContains(Uri.LEMMA, this.class.name, 'stanford')
         }
 
         View ner = container.newView();
@@ -105,10 +113,11 @@ public class Pipeline
         return container
     }
 
-    protected void set(Annotation a, String key, String value) {
+    protected boolean set(Annotation a, String key, String value) {
         if (value == null) {
-            return;
+            return false;
         }
         a.addFeature(key, value);
+        return true;
     }
 }

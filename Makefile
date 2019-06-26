@@ -33,7 +33,7 @@ stop:
 	docker rm -f $(NAME)
 
 push:
-	docker push $(TAG)
+	docker push $(TAG):latest
 
 tag:
 	docker tag $(IMAGE) $(TAG):$(VERSION)
