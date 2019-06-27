@@ -180,11 +180,8 @@ class Main implements MainMBean {
     }
 
     static void main(String[] args) {
-//        Configuration config = new Configuration()
-//        config.HOST = "localhost"
-//        config.BOX_NLP_STANFORD = "stanford.nlp.pool"
-        System.setProperty(RabbitMQ.USERNAME_PROPERTY, "nlp")
-        System.setProperty(RabbitMQ.PASSWORD_PROPERTY, "nlp")
+//        System.setProperty(RabbitMQ.USERNAME_PROPERTY, "nlp")
+//        System.setProperty(RabbitMQ.PASSWORD_PROPERTY, "nlp")
         Main app = new Main()
         Registry.register(app, "org.lappsgrid.eager.mining.nlp.stanford.Main:type=Main")
         Registry.startJmxReporter()
