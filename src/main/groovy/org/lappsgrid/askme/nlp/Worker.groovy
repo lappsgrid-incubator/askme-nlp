@@ -1,4 +1,4 @@
-package org.lappsgrid.eager.mining.web.nlp.stanford
+package org.lappsgrid.askme.nlp
 
 import com.codahale.metrics.Timer
 import com.codahale.metrics.Meter

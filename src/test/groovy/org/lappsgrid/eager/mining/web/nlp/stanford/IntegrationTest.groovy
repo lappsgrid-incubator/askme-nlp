@@ -1,6 +1,7 @@
 package org.lappsgrid.eager.mining.web.nlp.stanford
 
 import org.junit.*
+import org.lappsgrid.askme.nlp.Main
 import org.lappsgrid.eager.mining.core.json.Serializer
 import org.lappsgrid.rabbitmq.Message
 import org.lappsgrid.rabbitmq.topic.MailBox

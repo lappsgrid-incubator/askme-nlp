@@ -1,4 +1,4 @@
-package org.lappsgrid.eager.mining.web.nlp.stanford
+package org.lappsgrid.askme.nlp
 
 import edu.stanford.nlp.ling.CoreLabel
 import edu.stanford.nlp.pipeline.CoreDocument

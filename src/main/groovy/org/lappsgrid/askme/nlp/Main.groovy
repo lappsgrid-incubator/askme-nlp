@@ -1,11 +1,10 @@
-package org.lappsgrid.eager.mining.web.nlp.stanford
+package org.lappsgrid.askme.nlp
 
 import com.codahale.metrics.Meter
 import com.codahale.metrics.Timer
 import groovy.util.logging.Slf4j
 import org.lappsgrid.eager.mining.core.jmx.Registry
 import org.lappsgrid.rabbitmq.Message
-import org.lappsgrid.rabbitmq.RabbitMQ
 import org.lappsgrid.rabbitmq.topic.MailBox
 import org.lappsgrid.rabbitmq.topic.PostOffice
 
@@ -27,9 +26,38 @@ import java.util.concurrent.TimeUnit
 @Slf4j('logger')
 class Main implements MainMBean {
 
-    static final String HOST = "rabbitmq.lappsgrid.org/nlp"
-    static final String POSTOFFICE = "distributed.nlp.stanford"
-    static final String MAILBOX = "pipelines"
+    static {
+        String USER = "RABBIT_USERNAME"
+        String PASS = "RABBIT_PASSWORD"
+        String username = System.getProperty(USER);
+        if (username == null) {
+            username = System.getenv(USER);
+        }
+        String password = System.getProperty(PASS);
+        if (password == null) {
+            password = System.getenv(PASS);
+        }
+        if (username != null && password != null) {
+            // Use the environment variables if set.
+            return;
+        }
+
+        File file = new File("/etc/lapps/rabbit-nlp.ini")
+        if (!file.exists()) {
+            file = new File("/run/secrets/rabbit-nlp.ini")
+        }
+        if (file.exists()) {
+            Properties props = new Properties();
+            props.load(new FileReader(file));
+            System.setProperty(USER, props.get(USER).toString());
+            System.setProperty(PASS, props.get(PASS).toString());
+        }
+    }
+
+    // TODO These settings need to be externalized.
+    static final String HOST = "rabbitmq.lappsgrid.org"
+    static final String POSTOFFICE = "askme"
+    static final String MAILBOX = "nlp"
 
     static final String SEGMENTER = "segmenter"
     static final String POS = "pos"
@@ -91,7 +119,7 @@ class Main implements MainMBean {
 
     void start() {
 
-        logger.info("Staring Standord NLP service.")
+        logger.info("Staring Stanford NLP service.")
         box = new MailBox(POSTOFFICE, MAILBOX, HOST) {
             @Override
             void recv(String json) {

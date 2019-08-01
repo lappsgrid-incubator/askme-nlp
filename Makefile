@@ -1,7 +1,7 @@
-JAR=stanford.jar
+JAR=askme-nlp.jar
 REPO=docker.lappsgrid.org
-GROUP=nlp
-NAME=stanford
+GROUP=askme
+NAME=nlp
 IMAGE=$(GROUP)/$(NAME)
 TAG=$(REPO)/$(IMAGE)
 VERSION=$(shell cat VERSION)
@@ -21,10 +21,10 @@ docker:
 	docker tag $(IMAGE) $(TAG)
 
 run:
-	java -jar target/stanford.jar
+	java -jar target/$(JAR)
 
 debug:
-	docker run -it -p 11111:11111 -p 5672:5672 -e RABBIT_USERNAME=$(RABBIT_USERNAME) -e RABBIT_PASSWORD=$(RABBIT_PASSWORD) --name $(NAME) $(IMAGE) /bin/bash
+	docker run -it -p 11111:11111 -p 5672:5672 -e "RABBIT_USERNAME=$(RABBIT_USERNAME)" -e "RABBIT_PASSWORD=$(RABBIT_PASSWORD)" --name $(NAME) $(IMAGE) /bin/bash
 
 start:
 	docker run -d -p 11111:11111 -p 5672:5672 -e "RABBIT_USERNAME=$(RABBIT_USERNAME)" -e "RABBIT_PASSWORD=$(RABBIT_PASSWORD)" --name $(NAME) $(IMAGE)
@@ -39,6 +39,9 @@ tag:
 	docker tag $(IMAGE) $(TAG):$(VERSION)
 	docker push $(TAG):$(VERSION)
 
+all: clean jar docker push
+
 update:
-	curl -X POST http://129.114.17.83:9000/api/webhooks/96a05d8c-978b-40d9-9c6c-bc9856318c35
+	echo "Not implemented."
+	#curl -X POST http://129.114.17.83:9000/api/webhooks/96a05d8c-978b-40d9-9c6c-bc9856318c35
 

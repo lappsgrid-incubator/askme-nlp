@@ -18,6 +18,7 @@
         <metrics.version>3.2.6</metrics.version>
     </properties>
     <build>
+        <finalName>askme-nlp</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -30,14 +31,13 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>stanford</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
                             <descriptorRefs>
                                 <descriptorRef>jar-with-dependencies</descriptorRef>
                             </descriptorRefs>
                             <archive>
                                 <manifest>
-                                    <mainClass>org.lappsgrid.eager.mining.web.nlp.stanford.Main</mainClass>
+                                    <mainClass>org.lappsgrid.askme.nlp.Main</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>

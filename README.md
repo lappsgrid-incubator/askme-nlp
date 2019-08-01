@@ -19,15 +19,15 @@ Each of the pipelines executes all the annotators from the previous pipelines, t
 | Property | Value |
 |------|-----------------------|
 | Host | rabbitmq.lappsgrid.org|
-| Exchange | stanford |
-| Mailbox | pipelines |
+| Exchange | askme |
+| Mailbox | nlp |
 
 
 ```
-PostOffice po = new PostOffice("stanford", "rabbitmq.lappsgrid.org/nlp");
+PostOffice po = new PostOffice("askme", "rabbitmq.lappsgrid.org");
 Message message = new Message()
 ...
-message.route("pipelines")
+message.route("nlp")
 po.send(message)
 ```
 

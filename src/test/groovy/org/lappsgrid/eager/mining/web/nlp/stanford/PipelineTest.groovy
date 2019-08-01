@@ -2,6 +2,7 @@ package org.lappsgrid.eager.mining.web.nlp.stanford
 
 
 import org.junit.Test
+import org.lappsgrid.askme.nlp.Pipeline
 import org.lappsgrid.serialization.Serializer
 import org.lappsgrid.serialization.lif.Annotation
 import org.lappsgrid.serialization.lif.Container

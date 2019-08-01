@@ -1,10 +1,10 @@
 FROM openjdk:8-jdk
-RUN useradd -ms /bin/bash eager
-COPY start.sh /home/eager/start.sh
-RUN chmod +x /home/eager/start.sh
-COPY *.jar /home/eager
-USER eager
-WORKDIR /home/eager
-CMD ["/home/eager/start.sh"]
+RUN useradd -ms /bin/bash askme
+COPY start.sh /home/asmke/start.sh
+RUN chmod +x /home/askme/start.sh
+COPY *.jar /home/askme
+USER askme
+WORKDIR /home/askme
+CMD ["/home/askme/start.sh"]
 
 
