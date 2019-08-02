@@ -5,6 +5,7 @@ import com.codahale.metrics.Timer
 import groovy.util.logging.Slf4j
 //import org.lappsgrid.eager.mining.core.jmx.Registry
 import org.lappsgrid.rabbitmq.Message
+import org.lappsgrid.rabbitmq.RabbitMQ
 import org.lappsgrid.rabbitmq.topic.MailBox
 import org.lappsgrid.rabbitmq.topic.PostOffice
 
@@ -91,6 +92,7 @@ class Main implements MainMBean {
     Main() {
         // Initialize the pipelines.  Stanford Core NLP claims to be
         // thread-safe so we will take them at their word.
+        logger.info("Rabbit username: {}", System.getProperty(RabbitMQ.USERNAME_PROPERTY))
         pipelines = [
             segmenter: Pipeline.Segmenter(),
             pos: Pipeline.Tagger(),
@@ -100,7 +102,8 @@ class Main implements MainMBean {
 
         this.semaphore = new Object()
         this.post = new PostOffice(POSTOFFICE, HOST)
-
+        logger.trace("Rabbit host: {}", HOST)
+        logger.trace("Rabbit Exchange: {}", POSTOFFICE)
         // Configure our thread pool executor
         queue = new LinkedBlockingQueue<>()
         int minCores = 2
@@ -110,11 +113,13 @@ class Main implements MainMBean {
             minCores = maxCores = totalCores
         }
         else {
-            maxCores = totalCores // 2
-            minCores = maxCores // 2
+            maxCores = totalCores / 2
+//            minCores = maxCores // 2
         }
 
         pool = new ThreadPoolExecutor(minCores, maxCores, 30, TimeUnit.SECONDS, queue)
+        logger.debug("Threadpool size {}-{}", minCores, maxCores)
+
     }
 
     void start() {
@@ -125,7 +130,7 @@ class Main implements MainMBean {
             void recv(String json) {
                 Message message
                 try {
-                    logger.debug("Receieved message. Size: {}", json.length())
+                    logger.debug("Received message. Size: {}", json.length())
                     message = Serializer.parse(json, Message)
                 }
                 catch (Exception e) {
@@ -133,7 +138,7 @@ class Main implements MainMBean {
                     return
                 }
 
-                if ('shutdown' == message.command) {
+                if ('EXIT' == message.command || 'QUIT' == message.command) {
                     logger.info("Received a shutdown message.")
                     stop()
                     return
@@ -152,7 +157,8 @@ class Main implements MainMBean {
                 }
 
                 logger.debug("Staring a worker.")
-                Worker worker = new Worker(pipeline, message, Main.this.post, Main.this.timer, Main.this.count, Main.this.errors)
+                //Worker worker = new Worker(pipeline, message, Main.this.post, Main.this.timer, Main.this.count, Main.this.errors)
+                Worker worker = new Worker(pipeline, message, Main.this.post, null, null, null)
                 Main.this.pool.execute(worker)
             }
         }
@@ -192,24 +198,37 @@ class Main implements MainMBean {
         logger.info("Stopping the Stanford NLP service")
         pool.shutdown()
         if (!pool.awaitTermination(30, TimeUnit.SECONDS)) {
+            logger.warn("Thread pool failed to shutdown cleanly.  Trying to force a shutdown.")
             pool.shutdownNow()
         }
 
-        if (box) box.close()
-        if (post) post.close()
+        logger.trace("Closing post office")
+        close(post)
+        logger.trace("Closing mailbox")
+        close(box)
+        logger.trace("Notifying the semaphore")
         synchronized (semaphore) {
             semaphore.notifyAll()
         }
+        logger.trace("The semaphore has been notified")
     }
 
+    void close(def thing) {
+        if (thing == null) {
+            return
+        }
+        try {
+            thing.close()
+        }
+        catch (Exception e) {
+        }
+    }
     private void error(String message) {
         logger.error(message)
-        errors.mark()
+//        errors.mark()
     }
 
     static void main(String[] args) {
-//        System.setProperty(RabbitMQ.USERNAME_PROPERTY, "nlp")
-//        System.setProperty(RabbitMQ.PASSWORD_PROPERTY, "nlp")
         Main app = new Main()
 //        Registry.register(app, "org.lappsgrid.eager.mining.nlp.stanford.Main:type=Main")
 //        Registry.startJmxReporter()
@@ -220,5 +239,6 @@ class Main implements MainMBean {
             app.semaphore.wait()
         }
         logger.info("Stanford NLP service terminated.")
+        System.exit(0)
     }
 }

@@ -18,17 +18,17 @@ class Worker implements Runnable {
     Message message
     PostOffice post
 
-    Timer timer
-    Meter counter
-    Meter errors
+//    Timer timer
+//    Meter counter
+//    Meter errors
 
     Worker(Pipeline pipeline, Message message, PostOffice post, Timer timer, Meter counter, Meter errors) {
         this.pipeline = pipeline
         this.message = message
         this.post = post
-        this.timer = timer
-        this.counter = counter
-        this.errors = errors
+//        this.timer = timer
+//        this.counter = counter
+//        this.errors = errors
         logger.debug("Worker created")
     }
 

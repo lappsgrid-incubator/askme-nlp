@@ -77,4 +77,15 @@ class IntegrationTest {
         box.close()
         po.close()
     }
+
+    @Test
+    void shutdown() {
+        Message message = new Message()
+                .command("EXIT")
+                .route(Main.MAILBOX)
+
+        assert message.route.size() == 1
+        po.send(message)
+        po.close()
+    }
 }
