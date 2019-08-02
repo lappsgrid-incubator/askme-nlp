@@ -4,7 +4,7 @@ import groovy.util.logging.Slf4j
 import org.lappsgrid.askme.nlp.Main
 
 //import org.lappsgrid.eager.mining.core.Configuration
-import org.lappsgrid.eager.mining.core.jmx.Registry
+//import org.lappsgrid.eager.mining.core.jmx.Registry
 import org.lappsgrid.rabbitmq.Message
 import org.lappsgrid.rabbitmq.topic.MessageBox
 import org.lappsgrid.rabbitmq.topic.PostOffice
@@ -119,8 +119,8 @@ class StressTest implements StressTestMBean {
 
     static void main(String[] args) {
         StressTest app = new StressTest()
-        Registry.register(app, "org.lappsgrid.eager.mining.nlp.stanford.test:type=Test,name=Stress")
-        Registry.startJmxReporter()
+//        Registry.register(app, "org.lappsgrid.eager.mining.nlp.stanford.test:type=Test,name=Stress")
+//        Registry.startJmxReporter()
         app.run()
     }
 }

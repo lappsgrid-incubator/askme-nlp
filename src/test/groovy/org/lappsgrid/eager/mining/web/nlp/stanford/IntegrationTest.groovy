@@ -2,11 +2,12 @@ package org.lappsgrid.eager.mining.web.nlp.stanford
 
 import org.junit.*
 import org.lappsgrid.askme.nlp.Main
-import org.lappsgrid.eager.mining.core.json.Serializer
+//import org.lappsgrid.eager.mining.core.json.Serializer
 import org.lappsgrid.rabbitmq.Message
 import org.lappsgrid.rabbitmq.topic.MailBox
 import org.lappsgrid.rabbitmq.topic.PostOffice
 import org.lappsgrid.serialization.DataContainer
+import org.lappsgrid.serialization.Serializer
 
 import static org.lappsgrid.discriminator.Discriminators.*
 

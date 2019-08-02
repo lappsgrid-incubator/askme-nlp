@@ -3,7 +3,7 @@ package org.lappsgrid.askme.nlp
 import com.codahale.metrics.Meter
 import com.codahale.metrics.Timer
 import groovy.util.logging.Slf4j
-import org.lappsgrid.eager.mining.core.jmx.Registry
+//import org.lappsgrid.eager.mining.core.jmx.Registry
 import org.lappsgrid.rabbitmq.Message
 import org.lappsgrid.rabbitmq.topic.MailBox
 import org.lappsgrid.rabbitmq.topic.PostOffice
@@ -65,11 +65,11 @@ class Main implements MainMBean {
     static final String NER = "ner"
 
     /** The number of documents processed. */
-    final Meter count = Registry.meter('nlp', 'count')
+//    final Meter count = Registry.meter('nlp', 'count')
     /** The number of errors encountered. */
-    final Meter errors = Registry.meter('nlp', 'errors')
+//    final Meter errors = Registry.meter('nlp', 'errors')
     /** Processing time for documents. */
-    final Timer timer = Registry.timer('nlp', 'timer')
+//    final Timer timer = Registry.timer('nlp', 'timer')
 
     // Since we explicitly create a ThreadPoolExecutor we also need to
     // explicitly create the BlockingQueue used by the pool.
@@ -211,8 +211,8 @@ class Main implements MainMBean {
 //        System.setProperty(RabbitMQ.USERNAME_PROPERTY, "nlp")
 //        System.setProperty(RabbitMQ.PASSWORD_PROPERTY, "nlp")
         Main app = new Main()
-        Registry.register(app, "org.lappsgrid.eager.mining.nlp.stanford.Main:type=Main")
-        Registry.startJmxReporter()
+//        Registry.register(app, "org.lappsgrid.eager.mining.nlp.stanford.Main:type=Main")
+//        Registry.startJmxReporter()
         app.start()
 
         // Wait until another thread calls notify() or notifyAll() on the semaphore.

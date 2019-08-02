@@ -35,21 +35,21 @@ class Worker implements Runnable {
     void run() {
         logger.info("Staring worker in thread {}", Thread.currentThread().name)
         DataContainer data
-        Timer.Context context = timer.time()
+//        Timer.Context context = timer.time()
         try {
             data = Serializer.parse(message.body, DataContainer)
             // TODO Check the discriminator
             data.payload = pipeline.process(data.payload)
-            counter.mark()
+//            counter.mark()
         }
         catch (Exception e) {
             logger.error("Unable to process input.", e)
-            errors.mark()
+//            errors.mark()
             return
         }
-        finally {
-            context.close()
-        }
+//        finally {
+//            context.close()
+//        }
         logger.debug("Sending result to {}", message.route[0])
         message.body = data.asJson()
         post.send(message)
