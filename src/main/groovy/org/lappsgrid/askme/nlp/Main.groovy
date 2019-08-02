@@ -42,9 +42,9 @@ class Main implements MainMBean {
             return;
         }
 
-        File file = new File("/etc/lapps/rabbit-nlp.ini")
+        File file = new File("/etc/lapps/askme.ini")
         if (!file.exists()) {
-            file = new File("/run/secrets/rabbit-nlp.ini")
+            file = new File("/run/secrets/askme.ini")
         }
         if (file.exists()) {
             Properties props = new Properties();
