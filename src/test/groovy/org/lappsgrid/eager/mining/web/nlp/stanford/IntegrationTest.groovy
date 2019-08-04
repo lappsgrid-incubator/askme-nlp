@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit
 class IntegrationTest {
     public static final String TEXT = "Karen flew to New York. Nancy flew to Bloomington."
 //    static final Configuration c = new Configuration()
-    static final String SELF = 'stanford-test-return'
+    static final String SELF = 'askme-test-return'
 
     PostOffice po
 
@@ -75,6 +75,17 @@ class IntegrationTest {
         println Serializer.toPrettyJson(data.payload)
 
         box.close()
+        po.close()
+    }
+
+    @Test
+    void shutdown() {
+        Message message = new Message()
+                .command("EXIT")
+                .route(Main.MAILBOX)
+
+        assert message.route.size() == 1
+        po.send(message)
         po.close()
     }
 }

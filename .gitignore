@@ -7,3 +7,4 @@ VERSION
 Version.java
 stanford.log
 *.jar
+*.log
