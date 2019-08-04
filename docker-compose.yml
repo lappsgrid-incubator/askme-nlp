@@ -1,0 +1,64 @@
+version: '3.7'
+services:
+  nlp:
+    image: docker.lappsgrid.org/askme/nlp
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    secrets:
+      - askme.ini
+#  query:
+#    image: docker.lappsgrid.org/askme/query
+#    deploy:
+#      replicas: 1
+#      restart_policy:
+#        condition: on-failure
+#        delay: 5s
+#        max_attempts: 3
+#        window: 120s
+#    secrets:
+#      - askme.ini
+#  ranking:
+#    image: docker.lappsgrid.org/askme/ranking
+#    deploy:
+#      replicas: 1
+#      restart_policy:
+#        condition: on-failure
+#        delay: 5s
+#        max_attempts: 3
+#        window: 120s
+#    secrets:
+#      - askme.ini
+#  solr:
+#    image: docker.lappsgrid.org/askme/solr
+#    deploy:
+#      replicas: 1
+#      restart_policy:
+#        condition: on-failure
+#        delay: 5s
+#        max_attempts: 3
+#        window: 120s
+#    secrets:
+#      - askme.ini
+#  web:
+#    image: docker.lappsgrid.org/askme/web
+#    ports:
+#      - 8085:8080
+#    deploy:
+#      replicas: 1
+#      restart_policy:
+#        condition: on-failure
+#        delay: 5s
+#        max_attempts: 3
+#        window: 120s
+#    secrets:
+#      - askme.ini
+secrets:
+  askme.ini:
+    external: true
+#networks:
+#volumes:
