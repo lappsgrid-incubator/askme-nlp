@@ -143,6 +143,15 @@ class Main implements MainMBean {
                     stop()
                     return
                 }
+                if(message.command == 'PING') {
+                    String origin = message.getBody()
+                    logger.info('Received PING message from and sending response to {}', origin)
+                    Message response = new Message()
+                    response.setBody(MAILBOX)
+                    response.setCommand('PONG')
+                    response.setRoute([origin])
+                    post.send(response)
+                }
                 if (message.route.size() == 0) {
                     // There is nowhere to send the result so we have nothing to do.
                     error("NLP tools were sent data but have no route defined.")
