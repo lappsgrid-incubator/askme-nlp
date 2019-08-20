@@ -18,7 +18,7 @@
         <metrics.version>3.2.6</metrics.version>
     </properties>
     <build>
-        <finalName>askme-nlp</finalName>
+        <finalName>service</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
