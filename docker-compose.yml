@@ -31,7 +31,7 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
-   secrets:
+    secrets:
       - askme.ini
   solr:
     image: docker.lappsgrid.org/askme/solr
