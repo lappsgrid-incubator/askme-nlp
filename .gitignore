@@ -3,8 +3,11 @@ target/
 *.iml
 *.ipr
 *.iws
+
 VERSION
 Version.java
-stanford.log
+
 *.jar
 *.log
+
+src/main/resources/build
