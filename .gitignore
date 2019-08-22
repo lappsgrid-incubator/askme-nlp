@@ -3,11 +3,4 @@ target/
 *.iml
 *.ipr
 *.iws
-
-VERSION
 Version.java
-
-*.jar
-*.log
-
-src/main/resources/build
