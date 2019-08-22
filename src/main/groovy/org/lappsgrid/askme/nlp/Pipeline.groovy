@@ -6,6 +6,7 @@ import edu.stanford.nlp.pipeline.CoreEntityMention
 import edu.stanford.nlp.pipeline.CoreSentence
 import edu.stanford.nlp.pipeline.StanfordCoreNLP
 import edu.stanford.nlp.util.Pair
+import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j
 import org.lappsgrid.serialization.LifException
 import org.lappsgrid.serialization.lif.Annotation
@@ -18,6 +19,7 @@ import org.lappsgrid.vocabulary.Features
 /**
  *
  */
+@TypeChecked
 @Slf4j('logger')
 public class Pipeline
 {
