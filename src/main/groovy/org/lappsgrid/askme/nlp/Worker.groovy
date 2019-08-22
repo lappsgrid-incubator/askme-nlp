@@ -2,6 +2,7 @@ package org.lappsgrid.askme.nlp
 
 import com.codahale.metrics.Timer
 import com.codahale.metrics.Meter
+import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j
 import org.lappsgrid.rabbitmq.Message
 import org.lappsgrid.rabbitmq.topic.PostOffice
@@ -11,6 +12,7 @@ import org.lappsgrid.serialization.Serializer
 /**
  *
  */
+@TypeChecked
 @Slf4j("logger")
 class Worker implements Runnable {
 
@@ -37,7 +39,7 @@ class Worker implements Runnable {
         DataContainer data
 //        Timer.Context context = timer.time()
         try {
-            data = Serializer.parse(message.body, DataContainer)
+            data = Serializer.parse(message.body.toString(), DataContainer)
             // TODO Check the discriminator
             data.payload = pipeline.process(data.payload)
 //            counter.mark()

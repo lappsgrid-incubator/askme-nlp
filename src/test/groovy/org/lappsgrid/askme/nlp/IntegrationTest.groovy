@@ -1,9 +1,11 @@
 package org.lappsgrid.askme.nlp
 
 import org.junit.*
+import org.lappsgrid.askme.core.Configuration
 import org.lappsgrid.askme.nlp.Main
 //import org.lappsgrid.eager.mining.core.json.Serializer
 import org.lappsgrid.rabbitmq.Message
+import org.lappsgrid.rabbitmq.RabbitMQ
 import org.lappsgrid.rabbitmq.topic.MailBox
 import org.lappsgrid.rabbitmq.topic.PostOffice
 import org.lappsgrid.serialization.DataContainer
@@ -25,12 +27,21 @@ class IntegrationTest {
     public static final String TEXT = "Karen flew to New York. Nancy flew to Bloomington."
 //    static final Configuration c = new Configuration()
     static final String SELF = 'askme-test-return'
+    static final Configuration config = new Configuration()
 
     PostOffice po
 
+    @BeforeClass
+    static void init() {
+        // The username and password for the RabbitMQ server need to be set
+        // before any of the RabbitMQ classes are constructed.
+        System.setProperty(RabbitMQ.USERNAME_PROPERTY, config.USERNAME)
+        System.setProperty(RabbitMQ.PASSWORD_PROPERTY, config.PASSWORD)
+    }
+
     @Before
     void setup() {
-        po = new PostOffice(Main.POSTOFFICE, Main.HOST)
+        po = new PostOffice(config.EXCHANGE, config.HOST)
     }
 
     @After
@@ -43,7 +54,7 @@ class IntegrationTest {
     void test() {
         String json
         CountDownLatch latch = new CountDownLatch(1)
-        MailBox box = new MailBox(Main.POSTOFFICE, SELF, Main.HOST) {
+        MailBox box = new MailBox(config.EXCHANGE, SELF, config.HOST) {
             @Override
             void recv(String message) {
                 json = message

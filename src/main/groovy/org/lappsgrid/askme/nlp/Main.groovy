@@ -2,7 +2,10 @@ package org.lappsgrid.askme.nlp
 
 import com.codahale.metrics.Meter
 import com.codahale.metrics.Timer
+import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j
+import org.lappsgrid.askme.core.Configuration
+
 //import org.lappsgrid.eager.mining.core.jmx.Registry
 import org.lappsgrid.rabbitmq.Message
 import org.lappsgrid.rabbitmq.RabbitMQ
@@ -24,40 +27,16 @@ import java.util.concurrent.TimeUnit
 /**
  *
  */
+@TypeChecked
 @Slf4j('logger')
 class Main implements MainMBean {
 
+    static final Configuration config = new Configuration()
     static {
-        String USER = "RABBIT_USERNAME"
-        String PASS = "RABBIT_PASSWORD"
-        String username = System.getProperty(USER);
-        if (username == null) {
-            username = System.getenv(USER);
-        }
-        String password = System.getProperty(PASS);
-        if (password == null) {
-            password = System.getenv(PASS);
-        }
-        if (username != null && password != null) {
-            // Use the environment variables if set.
-            return;
-        }
-
-        File file = new File("/etc/lapps/askme.ini")
-        if (!file.exists()) {
-            file = new File("/run/secrets/askme.ini")
-        }
-        if (file.exists()) {
-            Properties props = new Properties();
-            props.load(new FileReader(file));
-            System.setProperty(USER, props.get(USER).toString());
-            System.setProperty(PASS, props.get(PASS).toString());
-        }
+        System.setProperty(RabbitMQ.USERNAME_PROPERTY, config.USERNAME)
+        System.setProperty(RabbitMQ.PASSWORD_PROPERTY, config.PASSWORD)
     }
 
-    // TODO These settings need to be externalized.
-    static final String HOST = "rabbitmq.lappsgrid.org"
-    static final String POSTOFFICE = "askme"
     static final String MAILBOX = "nlp"
 
     static final String SEGMENTER = "segmenter"
@@ -101,9 +80,9 @@ class Main implements MainMBean {
         ]
 
         this.semaphore = new Object()
-        this.post = new PostOffice(POSTOFFICE, HOST)
-        logger.trace("Rabbit host: {}", HOST)
-        logger.trace("Rabbit Exchange: {}", POSTOFFICE)
+        this.post = new PostOffice(config.EXCHANGE, config.HOST)
+        logger.trace("Rabbit host: {}", config.HOST)
+        logger.trace("Rabbit Exchange: {}", config.EXCHANGE)
         // Configure our thread pool executor
         queue = new LinkedBlockingQueue<>()
         int minCores = 2
@@ -113,7 +92,7 @@ class Main implements MainMBean {
             minCores = maxCores = totalCores
         }
         else {
-            maxCores = totalCores / 2
+            maxCores = (int)(totalCores / 2)
 //            minCores = maxCores // 2
         }
 
@@ -125,7 +104,7 @@ class Main implements MainMBean {
     void start() {
 
         logger.info("Staring Stanford NLP service.")
-        box = new MailBox(POSTOFFICE, MAILBOX, HOST) {
+        box = new MailBox(config.EXCHANGE, MAILBOX, config.HOST) {
             @Override
             void recv(String json) {
                 Message message
@@ -144,13 +123,13 @@ class Main implements MainMBean {
                     return
                 }
                 if(message.command == 'PING') {
-                    String origin = message.getBody()
-                    logger.info('Received PING message from and sending response to {}', origin)
+                    logger.info('Received PING message from and sending response to {}', message.route[0])
                     Message response = new Message()
-                    response.setBody(MAILBOX)
+                    response.setBody('PONG')
                     response.setCommand('PONG')
-                    response.setRoute([origin])
-                    post.send(response)
+                    response.setRoute(message.route)
+                    Main.this.post.send(response)
+                    return
                 }
                 if (message.route.size() == 0) {
                     // There is nowhere to send the result so we have nothing to do.
@@ -212,9 +191,11 @@ class Main implements MainMBean {
         }
 
         logger.trace("Closing post office")
-        close(post)
+//        close(post)
+        post.close()
         logger.trace("Closing mailbox")
-        close(box)
+//        close(box)
+        box.close()
         logger.trace("Notifying the semaphore")
         synchronized (semaphore) {
             semaphore.notifyAll()
@@ -222,16 +203,17 @@ class Main implements MainMBean {
         logger.trace("The semaphore has been notified")
     }
 
-    void close(def thing) {
-        if (thing == null) {
-            return
-        }
-        try {
-            thing.close()
-        }
-        catch (Exception e) {
-        }
-    }
+//    void close(def thing) {
+//        if (thing == null) {
+//            return
+//        }
+//        try {
+//            thing.close()
+//        }
+//        catch (Exception e) {
+//        }
+//    }
+
     private void error(String message) {
         logger.error(message)
 //        errors.mark()
