@@ -31,40 +31,6 @@ import java.util.concurrent.TimeUnit
 @Slf4j('logger')
 class Main implements MainMBean {
 
-    /*
-    static {
-        String USER = "RABBIT_USERNAME"
-        String PASS = "RABBIT_PASSWORD"
-        String username = System.getProperty(USER);
-        if (username == null) {
-            username = System.getenv(USER);
-        }
-        String password = System.getProperty(PASS);
-        if (password == null) {
-            password = System.getenv(PASS);
-        }
-        if (username != null && password != null) {
-            // Use the environment variables if set.
-            return;
-        }
-
-        File file = new File("/etc/lapps/askme.ini")
-        if (!file.exists()) {
-            file = new File("/run/secrets/askme.ini")
-        }
-        if (file.exists()) {
-            Properties props = new Properties();
-            props.load(new FileReader(file));
-            System.setProperty(USER, props.get(USER).toString());
-            System.setProperty(PASS, props.get(PASS).toString());
-        }
-    }
-
-    // TODO These settings need to be externalized.
-    static final String HOST = "rabbitmq.lappsgrid.org"
-    static final String POSTOFFICE = "askme"
-    */
-
     static final Configuration config = new Configuration()
     static {
         System.setProperty(RabbitMQ.USERNAME_PROPERTY, config.USERNAME)
@@ -157,13 +123,12 @@ class Main implements MainMBean {
                     return
                 }
                 if(message.command == 'PING') {
-//                    String origin = message.getBody()
                     logger.info('Received PING message from and sending response to {}', message.route[0])
-//                    Message response = new Message()
-                    message.setBody('PONG')
-                    message.setCommand('PONG')
-//                    response.setRoute([origin])
-                    Main.this.post.send(message)
+                    Message response = new Message()
+                    response.setBody('PONG')
+                    response.setCommand('PONG')
+                    response.setRoute(message.route)
+                    Main.this.post.send(response)
                     return
                 }
                 if (message.route.size() == 0) {
