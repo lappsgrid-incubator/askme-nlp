@@ -22,8 +22,6 @@ class MainTest {
     @BeforeClass
     static void init() {
         config = new Configuration()
-        System.setProperty(RabbitMQ.USERNAME_PROPERTY, config.USERNAME)
-        System.setProperty(RabbitMQ.PASSWORD_PROPERTY, config.PASSWORD)
     }
 
     @Before

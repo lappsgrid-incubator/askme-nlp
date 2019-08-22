@@ -32,10 +32,6 @@ import java.util.concurrent.TimeUnit
 class Main implements MainMBean {
 
     static final Configuration config = new Configuration()
-    static {
-        System.setProperty(RabbitMQ.USERNAME_PROPERTY, config.USERNAME)
-        System.setProperty(RabbitMQ.PASSWORD_PROPERTY, config.PASSWORD)
-    }
 
     static final String MAILBOX = "nlp"
 
