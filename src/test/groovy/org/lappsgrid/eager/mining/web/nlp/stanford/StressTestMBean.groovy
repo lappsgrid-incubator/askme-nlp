@@ -1,4 +1,4 @@
-package org.lappsgrid.askme.nlp
+package org.lappsgrid.eager.mining.web.nlp.stanford
 
 /**
  *
