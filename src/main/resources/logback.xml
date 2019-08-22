@@ -22,7 +22,8 @@
 	-->
 
 	<logger name="org.lappsgrid" level="warn"/>
-	<logger name="org.lappsgrid.eager" level="debug"/>
+	<logger name="org.lappsgrid.askme" level="info"/>
+	<logger name="org.lappsgrid.askme.nlp" level="trace"/>
 
 	<root level="debug">
 		<appender-ref ref="STDOUT" />

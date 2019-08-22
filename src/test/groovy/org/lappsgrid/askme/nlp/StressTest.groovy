@@ -1,11 +1,12 @@
-package org.lappsgrid.eager.mining.web.nlp.stanford
+package org.lappsgrid.askme.nlp
 
 import groovy.util.logging.Slf4j
-import org.lappsgrid.eager.mining.core.Configuration
-import org.lappsgrid.eager.mining.core.jmx.Registry
-import org.lappsgrid.eager.rabbitmq.Message
-import org.lappsgrid.eager.rabbitmq.topic.MessageBox
-import org.lappsgrid.eager.rabbitmq.topic.PostOffice
+
+//import org.lappsgrid.eager.mining.core.Configuration
+//import org.lappsgrid.eager.mining.core.jmx.Registry
+import org.lappsgrid.rabbitmq.Message
+import org.lappsgrid.rabbitmq.topic.MessageBox
+import org.lappsgrid.rabbitmq.topic.PostOffice
 
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -22,7 +23,6 @@ class StressTest implements StressTestMBean {
     List<Record> data
     int index
 
-    Configuration config
     AtomicInteger outstanding
     int maxOutstanding
 
@@ -31,9 +31,6 @@ class StressTest implements StressTestMBean {
         this.running = false
         this.data = loadData()
         this.index = 0
-        this.config = new Configuration()
-        this.config.HOST = "localhost"
-        this.config.BOX_NLP_STANFORD = "stanford.nlp.pool"
         this.outstanding = new AtomicInteger(0)
         this.maxOutstanding = 100
     }
@@ -41,7 +38,7 @@ class StressTest implements StressTestMBean {
     void run() {
         logger.info("Running stress test.")
 
-        MessageBox box = new MessageBox(config.POSTOFFICE, MAILBOX, config.HOST) {
+        MessageBox box = new MessageBox(Main.POSTOFFICE, MAILBOX, Main.HOST) {
             void recv(Message message) {
                 outstanding.decrementAndGet()
                 logger.info("Received {}", message.parameters.path)
@@ -50,7 +47,7 @@ class StressTest implements StressTestMBean {
 
 //        int maxOutstanding = 100
 
-        PostOffice post = new PostOffice(config.POSTOFFICE, config.HOST)
+        PostOffice post = new PostOffice(Main.POSTOFFICE, Main.HOST)
         running = true
         while (running) {
             while (running && outstanding.get() >= maxOutstanding) {
@@ -121,8 +118,8 @@ class StressTest implements StressTestMBean {
 
     static void main(String[] args) {
         StressTest app = new StressTest()
-        Registry.register(app, "org.lappsgrid.eager.mining.nlp.stanford.test:type=Test,name=Stress")
-        Registry.startJmxReporter()
+//        Registry.register(app, "org.lappsgrid.eager.mining.nlp.stanford.test:type=Test,name=Stress")
+//        Registry.startJmxReporter()
         app.run()
     }
 }

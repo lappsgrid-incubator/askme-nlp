@@ -1,34 +1,8 @@
-JAR=stanford.jar
-REPO=docker.lappsgrid.org
-GROUP=mining
 NAME=nlp
-IMAGE=$(GROUP)/$(NAME)
-TAG=$(REPO)/$(IMAGE)
-VERSION=$(shell cat VERSION)
 
-jar:
-	mvn package
-	cp target/$(JAR) src/main/docker/
+include ../master.mk
 
-clean:
-	mvn clean
-	if [ -e src/main/docker/$(JAR) ] ; then rm src/main/docker/$(JAR) ; fi
-
-docker:
-	if [ ! -e src/main/docker/$(JAR) ] ; then cp target/$(JAR) src/main/docker ; fi
-	cd src/main/docker && docker build -t $(IMAGE) .
-	docker tag $(IMAGE) $(TAG)
-
-start:
-	docker run -d -p 11111:11111 --name $(NAME) $(IMAGE)
-
-stop:
-	docker rm -f $(NAME)
-
-push:
-	docker push $(TAG)
-
-tag:
-	docker tag $(IMAGE) $(TAG):$(VERSION)
-	docker push $(TAG):$(VERSION)
+update:
+	echo "Not implemented."
+	#curl -X POST http://129.114.17.83:9000/api/webhooks/96a05d8c-978b-40d9-9c6c-bc9856318c35
 

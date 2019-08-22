@@ -1,0 +1,13 @@
+
+ServiceClient cloud = new ServiceClient("http://vassar.lappsgrid.org/invoker/anc:stanford.cloud.ner_1.0.0", "tester", "tester")
+ServiceClient grid = new ServiceClient("http://vassar.lappsgrid.org/invoker/anc:stanford.ner_2.1.0-SNAPSHOT", "tester", "tester")
+
+File file = new File("src/test/resources/inception.json")
+if (!file.exists()) {
+	println "Test data not found: ${file.path}"
+	return
+}
+String text = file.text
+println text
+//Data data = new Data(Uri.TEXT, text)
+println cloud.execute(text)
